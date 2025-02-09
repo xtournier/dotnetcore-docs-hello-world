@@ -1,12 +1,18 @@
-﻿@page
-@model IndexModel
-@{    
+@page
+@model dotnetcoresample.Pages.IndexModel
+@{
     ViewData["Title"] = "Home page";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Hello Xavier !!</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-    <hr />
-    <div>Host operating system: @Model.OSVersion</div>
+    <h1 class="display-4">Bienvenue</h1>
+    <p>Votre système d'exploitation est : @Model.OSVersion</p>
+
+    <h2>Données de la table PostgreSQL</h2>
+    <ul>
+        @foreach (var row in Model.TableData)
+        {
+            <li>@row</li>
+        }
+    </ul>
 </div>
