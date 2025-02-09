@@ -1,22 +1,51 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Runtime.InteropServices;
+using Npgsql;
+using System.Data;
+using System.Collections.Generic;
 
-namespace dotnetcoresample.Pages;
-
-public class IndexModel : PageModel
+namespace dotnetcoresample.Pages
 {
-
-    public string OSVersion { get { return RuntimeInformation.OSDescription; }  }
-    
-    private readonly ILogger<IndexModel> _logger;
-
-    public IndexModel(ILogger<IndexModel> logger)
+    public class IndexModel : PageModel
     {
-        _logger = logger;
-    }
+        public string OSVersion { get { return RuntimeInformation.OSDescription; } }
+        public List<string> TableData { get; set; } = new List<string>();
 
-    public void OnGet()
-    {        
+        private readonly ILogger<IndexModel> _logger;
+
+        public IndexModel(ILogger<IndexModel> logger)
+        {
+            _logger = logger;
+        }
+
+        public void OnGet()
+        {
+            ReadPostgresTableData();
+        }
+
+        private void ReadPostgresTableData()
+        {
+            var connString = "Host=10.0.0.2;Username=your_username;Password=your_password;Database=your_database";
+
+            using (var conn = new NpgsqlConnection(connString))
+            {
+                conn.Open();
+
+                using (var cmd = new NpgsqlCommand("SELECT * FROM pg_catalog.pg_tables", conn))
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var rowData = new List<string>();
+                        for (int i = 0; i < reader.FieldCount; i++)
+                        {
+                            rowData.Add(reader[i].ToString());
+                        }
+                        TableData.Add(string.Join(", ", rowData));
+                    }
+                }
+            }
+        }
     }
 }
