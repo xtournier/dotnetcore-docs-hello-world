@@ -28,8 +28,8 @@ namespace dotnetcoresample.Pages
         private void ReadPostgresTableData()
         {
             var connString = "Host=monsrvbdd.postgres.database.azure.com;Username=pensivegoose1;Password=yicLzWtIZFpCruuVLUSynQ;Database=postgres";
-            try
-            {
+            //try
+            //{
                 using (var conn = new NpgsqlConnection(connString))
                 {
                     conn.Open();
@@ -48,11 +48,11 @@ namespace dotnetcoresample.Pages
                         }
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error while reading PostgreSQL table data");
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    _logger.LogError(ex, "Error while reading PostgreSQL table data");
+            //}
         }
     }
 }
