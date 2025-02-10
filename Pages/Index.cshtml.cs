@@ -27,7 +27,7 @@ namespace dotnetcoresample.Pages
 
         private void ReadPostgresTableData()
         {
-            var connString = "Host=monsrvbdd.postgres.database.azure.com;Username=pensivegoose1;Password=yicLzWtIZFpCruuVLUSynQ;Database=null";
+            var connString = "Host=monsrvbdd.postgres.database.azure.com;Username=pensivegoose1;Password=yicLzWtIZFpCruuVLUSynQ;Database=postgres";
             try
             {
                 using (var conn = new NpgsqlConnection(connString))
