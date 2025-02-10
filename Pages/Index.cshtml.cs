@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using Npgsql;
 using System.Data;
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 
 namespace dotnetcoresample.Pages
 {
@@ -27,24 +28,30 @@ namespace dotnetcoresample.Pages
         private void ReadPostgresTableData()
         {
             var connString = "Host=monsrvbdd.postgres.database.azure.com;Username=pensivegoose1;Password=yicLzWtIZFpCruuVLUSynQ;Database=null";
-
-            using (var conn = new NpgsqlConnection(connString))
+            try
             {
-                conn.Open();
-
-                using (var cmd = new NpgsqlCommand("SELECT * FROM pg_catalog.pg_tables", conn))
-                using (var reader = cmd.ExecuteReader())
+                using (var conn = new NpgsqlConnection(connString))
                 {
-                    while (reader.Read())
+                    conn.Open();
+
+                    using (var cmd = new NpgsqlCommand("SELECT * FROM pg_catalog.pg_tables", conn))
+                    using (var reader = cmd.ExecuteReader())
                     {
-                        var rowData = new List<string>();
-                        for (int i = 0; i < reader.FieldCount; i++)
+                        while (reader.Read())
                         {
-                            rowData.Add(reader[i].ToString());
+                            var rowData = new List<string>();
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                rowData.Add(reader[i]?.ToString() ?? "NULL");
+                            }
+                            TableData.Add(string.Join(", ", rowData));
                         }
-                        TableData.Add(string.Join(", ", rowData));
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while reading PostgreSQL table data");
             }
         }
     }
